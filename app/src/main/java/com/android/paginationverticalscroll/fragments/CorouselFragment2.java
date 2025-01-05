@@ -2,6 +2,7 @@ package com.android.paginationverticalscroll.fragments;
 
 import static java.lang.Math.abs;
 
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,15 +72,14 @@ public class CorouselFragment2 extends Fragment {
         setuptransiton();
 
         setupIndicators();
-//        setCurrentIndicator(0);
-        animateIndicator(0);
+        setCurrentIndicator(0);
 
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-//                setCurrentIndicator(position % images.length);
-                animateIndicator(position % images.length);
+                setCurrentIndicator(position % images.length);
+//                animateIndicator(position % images.length);
             }
         });
     }
@@ -122,45 +122,15 @@ public class CorouselFragment2 extends Fragment {
         for (int i = 0; i < childCount; i++) {
             ImageView imageView = (ImageView) binding.indicatorLayout.getChildAt(i);
             if (i == index) {
-                animateIndicator(imageView, true);
+                imageView.setImageResource(R.drawable.indicator_active);
+
             } else {
-                animateIndicator(imageView, false);
+                imageView.setImageResource(R.drawable.indicator_inactive);
+
             }
         }
     }
 
-    private void animateIndicator(ImageView imageView, boolean isActive) {
-        if (isActive) {
-            imageView.setImageResource(R.drawable.indicator_active);
-            ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 1.2f);
-            ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 1f, 1.2f);
-            scaleX.setDuration(300);
-            scaleY.setDuration(300);
-            scaleX.start();
-            scaleY.start();
-        } else {
-            imageView.setImageResource(R.drawable.indicator_inactive);
-            ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1.2f, 1f);
-            ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 1.2f, 1f);
-            scaleX.setDuration(300);
-            scaleY.setDuration(300);
-            scaleX.start();
-            scaleY.start();
-        }
-    }
 
-    private void animateIndicator(int index) {
-        if (binding.indicatorLayout.getChildCount() == 0) return;
-
-        View targetDot = binding.indicatorLayout.getChildAt(index);
-
-        // Get the target dot's position on the screen
-        float targetX = targetDot.getX();
-
-        // Animate the moving indicator to the target dot
-        ObjectAnimator animator = ObjectAnimator.ofFloat(binding.animatedIndicator, "translationX", targetX);
-        animator.setDuration(300);
-        animator.start();
-    }
 
 }
